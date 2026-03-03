@@ -14,10 +14,26 @@ const app = express();
 
 connectDB();
 
+// Allow all Vercel preview URLs + configured frontend
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  /\.vercel\.app$/,  // allow all vercel.app subdomains
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, Railway health checks)
+    if (!origin) return callback(null, true);
+    const allowed = allowedOrigins.some((o) =>
+      o instanceof RegExp ? o.test(origin) : o === origin
+    );
+    if (allowed) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
