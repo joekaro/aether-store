@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getAllProducts } from "@/lib/api";
 import CategoryPageLayout from "@/components/CategoryPageLayout";
 

@@ -2,10 +2,8 @@ import { getProductById, getAllProducts } from "@/lib/api";
 import ProductPageClient from "../ProductPageClient";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  const products = await getAllProducts();
-  return products.map((p) => ({ id: p.id }));
-}
+// Don't pre-render at build time — render on demand
+export const dynamic = "force-dynamic";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
