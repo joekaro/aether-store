@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+export const dynamic = "force-dynamic";
+
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -16,7 +18,7 @@ interface Order {
   shippingAddress: { firstName: string; lastName: string; address: string; city: string; country: string };
 }
 
-export default function VerifyPage() {
+function VerifyPageInner() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("reference") || searchParams.get("ref") || searchParams.get("trxref");
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
@@ -151,5 +153,17 @@ export default function VerifyPage() {
         </motion.div>
       )}
     </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-neutral-200 border-t-neutral-900 rounded-full animate-spin" />
+      </div>
+    }>
+      <VerifyPageInner />
+    </Suspense>
   );
 }
